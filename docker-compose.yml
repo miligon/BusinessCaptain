@@ -1,0 +1,50 @@
+services:
+  db:
+    container_name: mysql-${SERVER_NAME}
+    image: mysql:8.0.35
+    volumes:
+      - mysql-db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} 
+      - MYSQL_DATABASE=${MYSQL_DATABASE} 
+      - MYSQL_USER=${MYSQL_USER} 
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD} 
+    expose:
+      - "3306"
+
+  web:
+    build: 
+      context: ./
+      dockerfile: ./backend/Dockerfile
+    container_name: backend-${SERVER_NAME}
+    command: bash -c "gunicorn BusinessCaptain.wsgi:application --bind 0.0.0.0:8000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE} 
+      - MYSQL_USER=${MYSQL_USER} 
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD} 
+      - MYSQL_HOST=mysql-${SERVER_NAME}
+    volumes:
+      - ./backend:/backend
+      - static_files:/backend/static
+      - media_files:/backend/media
+    expose:
+      - "8000"
+    depends_on:
+      - db
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_files:/app/static
+    ports:
+      - 80:80
+    depends_on:
+      - web
+
+volumes:
+  mysql-db:
+  react_dist_files:
+  static_files:
+  media_files:

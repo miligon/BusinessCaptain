@@ -1,0 +1,33 @@
+.button-link {
+  background: none !important;
+  border: none;
+  padding: 0 !important;
+}
+
+.custom-paginator {
+  .page-link.active,
+  .active > .page-link {
+    z-index: 0 !important;
+  }
+}
+
+.pos-table-search-container {
+  width: 100%;
+  height: 60vh;
+  overflow-y: auto;
+}
+
+.active-row {
+}
+
+.pdf-viewer {
+  height: 450px;
+  overflow-y: auto;
+}
+
+table thead tr th {
+  /* Important */
+  position: sticky;
+  z-index: 0;
+  top: 0;
+}

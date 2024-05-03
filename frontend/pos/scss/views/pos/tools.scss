@@ -1,0 +1,11 @@
+.pos-tools {
+  .tickets-workspace {
+    height: 80vh;
+    width: 100%;
+  }
+
+  .tickets-workspace .tickets-table {
+    min-width: 40%;
+    overflow-y: auto;
+  }
+}

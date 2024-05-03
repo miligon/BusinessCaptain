@@ -1,0 +1,32 @@
+.login-container {
+  background-color: navy;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .logo-container {
+    margin-bottom: 30px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+  }
+
+  .logo-container img {
+    max-width: 40px;
+    margin-right: 12px;
+    margin-left: 60px;
+  }
+
+  .logo-container button {
+    border-color: #fff;
+    border-radius: 50%;
+  }
+}
+
+.login-form {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+}

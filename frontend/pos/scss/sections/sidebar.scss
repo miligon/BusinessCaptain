@@ -1,0 +1,52 @@
+.sidebar-app {
+  display: flex;
+  height: 100%;
+  position: fixed;
+
+  .nav-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .title-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .title-text {
+    padding-left: 10px;
+  }
+
+  @include media-breakpoint-up(lg) {
+    width: 280px;
+
+    hr {
+      width: 250px;
+    }
+  }
+
+  @include media-breakpoint-down(xl) {
+    align-items: center;
+    width: 80px;
+
+    hr {
+      width: 70px;
+    }
+
+    .title-text {
+      display: none;
+    }
+
+    .nav-text {
+      display: none;
+    }
+
+    .hostname {
+      display: none;
+    }
+
+    .nav-item {
+      max-width: 60px;
+    }
+  }
+}

@@ -1,0 +1,60 @@
+footer {
+  position: relative;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  width: 100%;
+
+  ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .socials {
+    gap: 20px;
+  }
+
+  .socials a {
+    font-size: 24px;
+    text-decoration: none;
+    color:black
+  }
+
+  .links {
+    gap: 10px;
+
+    a {
+      text-decoration: none;
+    }
+  }
+
+  .legal {
+    font-size: 12px;
+    margin: 0;
+  }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  @media (width > 420px) {
+    section {
+      align-items: center;
+      padding-left: 0;
+      gap: 20px;
+    }
+
+    .links {
+      gap: 20px;
+    }
+  }
+}

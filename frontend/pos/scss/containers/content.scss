@@ -1,0 +1,15 @@
+.app-container {
+  display: flex;
+  overflow-y: auto;
+  position: relative;
+
+  @include media-breakpoint-up(lg) {
+    left: 280px;
+    width: 80%;
+  }
+
+  @include media-breakpoint-down(xl) {
+    left: 80px;
+    width: 92%;
+  }
+}

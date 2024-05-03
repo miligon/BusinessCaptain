@@ -1,0 +1,66 @@
+.button-link {
+  background: none !important;
+  border: none;
+  padding: 0 !important;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+.business-captain-button {
+  width: 30px;
+  height: 30px;
+}
+
+.custom-carousel {
+  max-height: 100%; /* Adjust the height as needed */
+}
+
+
+
+.carousel-content {
+  display: flex;
+  position: inherit;
+
+  .button-carousel {
+    display: block;
+    width: auto;
+    position: absolute;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 999;
+    border-color: white;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    line-height: 25px;
+    left: 50%;
+    margin-left: -50px;
+    top: 87%;
+    //margin-top: -50px;
+
+    @include media-breakpoint-down(sm) { 
+      font-size: 18px; 
+      top: 75%;
+    }
+  }
+}
+
+.carousel-caption {
+  @include media-breakpoint-up(sm) { 
+    display: block !important;
+  }
+  @include media-breakpoint-down(sm) { 
+    display: none !important;
+  }
+}
+
+.custom-carousel-image {
+  object-fit: cover;
+  width: 100%; /* Ensure images cover the entire carousel */
+  max-height: 400px;
+}
+

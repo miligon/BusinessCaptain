@@ -1,0 +1,42 @@
+@import 'bootstrap/scss/bootstrap';
+@import 'remixicon/fonts/remixicon';
+
+@import 'containers/content.scss';
+@import 'components/general.scss';
+
+@import 'sections/sidebar.scss';
+
+@import 'views/customer_manager/_manager.scss';
+@import 'views/reports/_departments';
+@import 'views/login/login.scss';
+@import 'views/almacen/index.scss';
+@import 'views/pos/index.scss';
+
+// Toggle global options
+$enable-gradients: true;
+$enable-shadows: true;
+
+$offcanvas-box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+
+// Customize some defaults
+$body-color: #333;
+$body-bg: #fff;
+$border-radius: 0.4rem;
+$success: #7952b3;
+
+body {
+  min-height: -webkit-fill-available;
+  min-height: 100vh;
+}
+
+html {
+  height: -webkit-fill-available;
+}
+
+main {
+  height: -webkit-fill-available;
+  height: 100vh;
+  max-height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
