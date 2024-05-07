@@ -29,7 +29,7 @@ STATIC_REACT=/react/static
 TEMPLATES_REACT=/react/templates
 ```
 
-This project is configured to serve static React dist files. To do so, is expected to build the frontend and put the path to the resulting files in the STATIC_REACT variable. The entry file (usually index.html) is expected to be renamed to index_react.html and set the path to that file in TEMPLATES_REACT
+This project is configured to serve static React dist files in production. To do so, is expected to build the frontend and put the path to the resulting files in the STATIC_REACT variable. The entry file (usually index.html) is expected to be renamed to index_react.html and set the path to that file in TEMPLATES_REACT. **For development you can omit this part**
 
 The project includes a Dockerfile which is configured to do the process of building frontend and install backend dependencies. Also check the dockercompose.yml in the root of the project
 
