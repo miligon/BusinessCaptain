@@ -9,6 +9,11 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE} 
       - MYSQL_USER=${MYSQL_USER} 
       - MYSQL_PASSWORD=${MYSQL_PASSWORD} 
+    healthcheck:
+      test: ["CMD-SHELL", 'mysql --database=$$MYSQL_DATABASE --password=$$MYSQL_ROOT_PASSWORD --execute="SELECT count(table_name) > 0 FROM information_schema.tables;" --skip-column-names -B']
+      interval: 30s
+      timeout: 10s
+      retries: 4
     expose:
       - "3306"
 
