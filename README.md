@@ -24,11 +24,12 @@ In this section you can see the amount of your sales by department and by produc
 
 In this section you can capture sales and reprint tickets
 
-### To use
+### To run
 
-In order to run this project on your computer you can clone this repository, you will need to have installed Python 3.12.0 and node 20.11.1.
+#### Development
 
-You can follow the instructions on the subdirectories for frontend and backend.
+In order to run this project on your computer you can clone this repository and follow the instructions on the subdirectories for frontend and backend. Previously you will need to have installed Python 3.12.0 and node 20.11.1, it is recommended to use virtualenv or conda for managing Python environment.
+
 
 #### Docker
 
