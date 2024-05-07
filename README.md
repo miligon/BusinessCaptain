@@ -30,12 +30,39 @@ In this section you can capture sales and reprint tickets
 
 In order to run this project on your computer you can clone this repository and follow the instructions on the subdirectories for frontend and backend. Previously you will need to have installed Python 3.12.0 and node 20.11.1, it is recommended to use virtualenv or conda for managing Python environment.
 
+##### Docker development env
 
-#### Docker
+The easiest way to run the project dev environment is using Docker. For that you need to have Docker on your computer and run:
+
+`docker-compose -f dockercompose.dev.yml up`
+
+The command above will build the images for DB server and django backend. The project will expose the port 8000 so you can connect to `http://localhost:8000` to django backend and port 3306 for the mysql server instance
+
+After that you will need to run:
+
+```
+docker-compose -f docker-compose.dev.yml exec web python manage.py migrate --noinput
+docker-compose -f docker-compose.dev.yml exec web python manage.py collectstatic --no-input
+docker-compose -f docker-compose.dev.yml exec web python manage.py create_initial_data
+```
+
+The commands above will run the migrations, collect static data and create some initial data
+
+If you want to access the admin page, you might need to create a superuser with ` docker-compose -f docker-compose.dev.yml exec -it web python manage.py createsuperuser`
+
+And finally restart the services with:
+
+```
+docker-compose -f docker-compose.dev.yml restart
+```
+
+#### To deploy
+
+##### Docker
 
 The easiest way to run the project is using Docker. For that you need to have Docker on your computer and run:
 
-`docker-compose -f docekrcompose.yml up`
+`docker-compose -f dockercompose.yml up`
 
 The command above will build the images and get it running. The project will expose the port 80 so you can connect to `http://localhost`
 
