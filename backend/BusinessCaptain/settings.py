@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework',
     'corsheaders',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -192,3 +193,8 @@ SENDFILE_BACKEND = "django_sendfile.backends.simple"
 SENDFILE_ROOT = '/fiscal/'
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 30000
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}
