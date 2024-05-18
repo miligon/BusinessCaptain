@@ -141,7 +141,7 @@ def render_ticket(self, pdf):
     pdf.set_font(fontType, 'B', font)
     if (self.documentType != self.TICKET):
         if hasattr(self.carrito, 'orden_trabajo'):
-            pdf.cell(0, h, f"{str(self.documentType)} {str(self.folio)} (OT-{self.carrito.orden_trabajo.folio})" , align='L', ln=2)
+            pdf.cell(0, h, f"{str(self.documentType)} {str(self.folio)} (OT)" , align='L', ln=2)
         else:
             pdf.cell(0, h, f"{str(self.documentType)} {str(self.folio)}" , align='L', ln=2)
 

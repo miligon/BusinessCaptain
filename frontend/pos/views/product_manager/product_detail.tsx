@@ -40,6 +40,7 @@ import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { Codigo, Producto } from 'pos/store/products/products_slice';
 import { generateBarcode } from 'common/utils';
 import Modal from 'pos/components/forms/Modal';
+import axiosBC from 'pos/store/interceptors';
 
 const ProductDetails: FC = () => {
   const { id: id_producto } = useParams();
@@ -129,15 +130,40 @@ const ProductDetails: FC = () => {
 
   const handleDeleteCodebar = (codigo: string) => setCodebars([...codebars.filter((c) => c.codigo !== codigo)]);
 
-  const handleAddCodebar = () => {
-    const newCodebars = codebars;
-    if (newCodebars.find((c) => c.codigo === inputCodebar) || inputCodebar === '') {
-      setInputCodebarInvalid(true);
-      return;
-    }
+  const codebarVerification = async (codigo: string) => {
+    const endpoint = `api/almacen/producto/search?depto=&marca=&familia=&query=&codigo=${codigo}&page=1`;
+    try{
+      const response = await axiosBC.get(endpoint);
+      return response.data.results
 
-    setCodebars([...newCodebars, { codigo: inputCodebar }]);
+    }catch(error){
+
+      console.error("Ocurrió un error.", error);
+      throw error
+    }
   };
+
+  const handleAddCodebar = async () => {
+    const newCodebars = [...codebars];
+    const trimmedCodebar = inputCodebar.trim();
+
+    const usedCode = await codebarVerification(inputCodebar);
+    console.log("Tamaño del array",usedCode.length); 
+    console.log(newCodebars)
+    
+    if(usedCode.length === 1){
+      setInputCodebarInvalid(true)
+      return ;
+    } 
+
+     if (newCodebars.find((c) => c.codigo === trimmedCodebar) || trimmedCodebar === '') {
+          setInputCodebarInvalid(true);
+          return;
+        }
+        setCodebars([...newCodebars, { codigo: trimmedCodebar }]);
+  };
+
+
 
   const onSubmit: SubmitHandler<Producto> = (data) => {
     const costo = typeof watch('costo') === 'string' ? parseFloat(watch('costo').toString()) : watch('costo');
