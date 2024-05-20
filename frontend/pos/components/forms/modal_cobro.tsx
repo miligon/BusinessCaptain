@@ -176,7 +176,7 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
       <Row>
         <Col className="d-flex align-items-center justify-content-center text" sm={2}>
           <h1>
-            <i className="ri-cash-line" />
+            <i className="" />
           </h1>
         </Col>
         <Col sm={10}>
@@ -214,7 +214,7 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
       <Row>
         <Col className="d-flex align-items-center justify-content-center text" sm={2}>
           <h1>
-            <i className="ri-cash-line" />
+            <i className="ri-bank-card-fill" />
           </h1>
         </Col>
         <Col sm={10}>
