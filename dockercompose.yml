@@ -16,6 +16,7 @@ services:
       retries: 4
     expose:
       - "3306"
+    restart: always
 
   web:
     build: 
@@ -38,15 +39,17 @@ services:
       - "8000"
     depends_on:
       - db
+    restart: always
 
   nginx:
     build: ./nginx
     volumes:
       - static_files:/app/static
     ports:
-      - 80:80
+      - 8000:80
     depends_on:
       - web
+    restart: always
 
 volumes:
   mysql-db:
