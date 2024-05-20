@@ -176,7 +176,7 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
       <Row>
         <Col className="d-flex align-items-center justify-content-center text" sm={2}>
           <h1>
-            <i className="" />
+            <i className="ri-cash-line" />
           </h1>
         </Col>
         <Col sm={10}>
@@ -231,7 +231,7 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
               <InputGroupText>
                 <strong>Confirmar monto: $</strong>
               </InputGroupText>
-              <Input innerRef={inputRef} onKeyDown={(e) => handleKeyDownOnSearch(e.code)} value={montoConfirmado} onChange={(e) => setMontoConfirmado(parseFloat(e.target.value))} step={0.01} min={0} type="number" invalid={montoInvalid} />
+              <Input onKeyDown={(e) => handleKeyDownOnSearch(e.code)} value={montoConfirmado} onChange={(e) => setMontoConfirmado(parseFloat(e.target.value))} step={0.01} min={0} type="number" invalid={montoInvalid} />
             </InputGroup>
           </Row>
         </Col>
