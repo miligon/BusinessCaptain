@@ -64,6 +64,7 @@ const ProductDetails: FC = () => {
   const [inputCodebarInvalid, setInputCodebarInvalid] = useState(false);
   const [codebars, setCodebars] = useState([] as Codigo[]);
   const [publicacionImpresa, setPublicacionImpresa] = useState(false);
+  const [UPCCodeError, setUPCCodeError] = useState('');
 
   const [showExitConfirmation, setShowExitConfirmation] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -132,14 +133,12 @@ const ProductDetails: FC = () => {
 
   const codebarVerification = async (codigo: string) => {
     const endpoint = `api/almacen/producto/search?depto=&marca=&familia=&query=&codigo=${codigo}&page=1`;
-    try{
+    try {
       const response = await axiosBC.get(endpoint);
-      return response.data.results
-
-    }catch(error){
-
-      console.error("Ocurrió un error.", error);
-      throw error
+      return response.data.results;
+    } catch (error) {
+      console.error('Ocurrió un error.', error);
+      throw error;
     }
   };
 
@@ -147,23 +146,22 @@ const ProductDetails: FC = () => {
     const newCodebars = [...codebars];
     const trimmedCodebar = inputCodebar.trim();
 
+    if (newCodebars.find((c) => c.codigo === trimmedCodebar) || trimmedCodebar === '') {
+      setInputCodebarInvalid(true);
+      setUPCCodeError(`El código ya esta registrado en la lista de codigos`);
+      return;
+    }
+
     const usedCode = await codebarVerification(inputCodebar);
-    console.log("Tamaño del array",usedCode.length); 
-    console.log(newCodebars)
-    
-    if(usedCode.length === 1){
-      setInputCodebarInvalid(true)
-      return ;
-    } 
 
-     if (newCodebars.find((c) => c.codigo === trimmedCodebar) || trimmedCodebar === '') {
-          setInputCodebarInvalid(true);
-          return;
-        }
-        setCodebars([...newCodebars, { codigo: trimmedCodebar }]);
+    if (usedCode.length === 1) {
+      setInputCodebarInvalid(true);
+      setUPCCodeError(`Código ya en uso por: ${usedCode[0].sku} - ${usedCode[0].producto}`);
+      return;
+    }
+
+    setCodebars([...newCodebars, { codigo: trimmedCodebar }]);
   };
-
-
 
   const onSubmit: SubmitHandler<Producto> = (data) => {
     const costo = typeof watch('costo') === 'string' ? parseFloat(watch('costo').toString()) : watch('costo');
@@ -358,7 +356,7 @@ const ProductDetails: FC = () => {
                         }}
                         onKeyDown={(e) => handleKeyDownOnCode(e.code)}
                       />
-                      <FormFeedback>Código invalido o ya en uso</FormFeedback>
+                      <FormFeedback>{UPCCodeError}</FormFeedback>
                     </InputGroup>
                   </FormGroup>
                 </Col>

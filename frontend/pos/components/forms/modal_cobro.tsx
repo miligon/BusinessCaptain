@@ -22,12 +22,14 @@ interface ModalProps {
 const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, onFinish, saleData }) {
   const [efectivoInvalid, setEfectivoInvalid] = useState(false);
   const [cambioInvalid, setCambioInvalid] = useState(true);
-  const [montoInvalid, setMontoInvalid] = useState(true); 
+  const [montoInvalid, setMontoInvalid] = useState(true);
   const [cobroDispatched, setCobroDispatched] = useState(false);
   const [ticket, setTicket] = useState('');
   const inputRef = React.createRef<HTMLInputElement>();
   const [total, setTotal] = useState(0.0);
-  const [montoConfirmado, setMontoConfirmado] = useState(0.0) 
+  const [montoConfirmado, setMontoConfirmado] = useState(0.0)
+  const inputRefMontoTarjeta = React.createRef<HTMLInputElement>();
+  const debouncedMontoTarjeta = useDebounce(montoConfirmado, 1000);
   const [efectivo, setEfectivo] = useState(0.0);
   const [cambio, setCambio] = useState(0.0);
   const [banco, setBanco] = useState('');
@@ -57,6 +59,13 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
   }, [isOpen, debouncedEfectivo, saleData, inputRef]);
 
   useEffect(() => {
+      if (isOpen && !debouncedMontoTarjeta[1].isPending()) {
+        inputRefMontoTarjeta.current?.focus();
+        inputRefMontoTarjeta.current?.select();
+      }
+  }, [isOpen, debouncedMontoTarjeta, inputRefMontoTarjeta]);
+
+  useEffect(() => {
     const cambio = efectivo - total;
     setCambio(cambio);
     if (cambio < 0) {
@@ -68,9 +77,9 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
 
   useEffect(() => {
     if (montoConfirmado >= 0 && montoConfirmado !== total) {
-      setMontoInvalid(true); 
+      setMontoInvalid(true);
     } else {
-      setMontoInvalid(false); 
+      setMontoInvalid(false);
     }
   }, [montoConfirmado, total]);
 
@@ -89,8 +98,8 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
         }
         saleData.infoPago = { ...saleData.infoPago, banco: banco, referencia: referencia };
       }
-      if([PAYMENT_TYPE.TARJETA_CREDITO.value, PAYMENT_TYPE.TARJETA_DEBITO.value].includes(saleData.infoPago?.forma)){
-        if(total !== montoConfirmado){
+      if ([PAYMENT_TYPE.TARJETA_CREDITO.value, PAYMENT_TYPE.TARJETA_DEBITO.value].includes(saleData.infoPago?.forma)) {
+        if (total !== montoConfirmado) {
           return;
         }
       }
@@ -127,7 +136,7 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
       if ([PAYMENT_TYPE.CHEQUE.value, PAYMENT_TYPE.TRANSFERENCIA_BANCARIA.value].includes(saleData.infoPago?.forma)) {
         return renderCobroBanco();
       }
-      if([PAYMENT_TYPE.TARJETA_CREDITO.value, PAYMENT_TYPE.TARJETA_DEBITO.value].includes(saleData.infoPago?.forma)){
+      if ([PAYMENT_TYPE.TARJETA_CREDITO.value, PAYMENT_TYPE.TARJETA_DEBITO.value].includes(saleData.infoPago?.forma)) {
         return renderCobroTarjeta();
       }
     }
@@ -231,7 +240,7 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
               <InputGroupText>
                 <strong>Confirmar monto: $</strong>
               </InputGroupText>
-              <Input onKeyDown={(e) => handleKeyDownOnSearch(e.code)} value={montoConfirmado} onChange={(e) => setMontoConfirmado(parseFloat(e.target.value))} step={0.01} min={0} type="number" invalid={montoInvalid} />
+              <Input innerRef={inputRefMontoTarjeta} onKeyDown={(e) => handleKeyDownOnSearch(e.code)} value={montoConfirmado} onChange={(e) => setMontoConfirmado(parseFloat(e.target.value))} step={0.01} min={0} type="number" invalid={montoInvalid} />
             </InputGroup>
           </Row>
         </Col>
