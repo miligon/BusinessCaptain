@@ -22,10 +22,14 @@ interface ModalProps {
 const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, onFinish, saleData }) {
   const [efectivoInvalid, setEfectivoInvalid] = useState(false);
   const [cambioInvalid, setCambioInvalid] = useState(true);
+  const [montoInvalid, setMontoInvalid] = useState(true);
   const [cobroDispatched, setCobroDispatched] = useState(false);
   const [ticket, setTicket] = useState('');
   const inputRef = React.createRef<HTMLInputElement>();
   const [total, setTotal] = useState(0.0);
+  const [montoConfirmado, setMontoConfirmado] = useState(0.0)
+  const inputRefMontoTarjeta = React.createRef<HTMLInputElement>();
+  const debouncedMontoTarjeta = useDebounce(montoConfirmado, 1000);
   const [efectivo, setEfectivo] = useState(0.0);
   const [cambio, setCambio] = useState(0.0);
   const [banco, setBanco] = useState('');
@@ -55,6 +59,13 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
   }, [isOpen, debouncedEfectivo, saleData, inputRef]);
 
   useEffect(() => {
+      if (isOpen && !debouncedMontoTarjeta[1].isPending()) {
+        inputRefMontoTarjeta.current?.focus();
+        inputRefMontoTarjeta.current?.select();
+      }
+  }, [isOpen, debouncedMontoTarjeta, inputRefMontoTarjeta]);
+
+  useEffect(() => {
     const cambio = efectivo - total;
     setCambio(cambio);
     if (cambio < 0) {
@@ -63,6 +74,14 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
       setCambioInvalid(false);
     }
   }, [efectivo, total]);
+
+  useEffect(() => {
+    if (montoConfirmado >= 0 && montoConfirmado !== total) {
+      setMontoInvalid(true);
+    } else {
+      setMontoInvalid(false);
+    }
+  }, [montoConfirmado, total]);
 
   const handleCobrar = () => {
     if (saleData.infoPago?.forma) {
@@ -79,6 +98,11 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
         }
         saleData.infoPago = { ...saleData.infoPago, banco: banco, referencia: referencia };
       }
+      if ([PAYMENT_TYPE.TARJETA_CREDITO.value, PAYMENT_TYPE.TARJETA_DEBITO.value].includes(saleData.infoPago?.forma)) {
+        if (total !== montoConfirmado) {
+          return;
+        }
+      }
     }
     dispatch(postSale(saleData));
     setCobroDispatched(true);
@@ -93,12 +117,14 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
   const handleReset = () => {
     setEfectivoInvalid(false);
     setCambioInvalid(true);
+    setMontoInvalid(false);
     setTicket('');
     setBanco('');
     setReferencia('');
     setTotal(0.0);
     setEfectivo(0.0);
     setCambio(0.0);
+    setMontoConfirmado(0.0);
     setCobroDispatched(false);
   };
 
@@ -109,6 +135,9 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
       }
       if ([PAYMENT_TYPE.CHEQUE.value, PAYMENT_TYPE.TRANSFERENCIA_BANCARIA.value].includes(saleData.infoPago?.forma)) {
         return renderCobroBanco();
+      }
+      if ([PAYMENT_TYPE.TARJETA_CREDITO.value, PAYMENT_TYPE.TARJETA_DEBITO.value].includes(saleData.infoPago?.forma)) {
+        return renderCobroTarjeta();
       }
     }
     return null;
@@ -182,6 +211,36 @@ const ModalCobro: FC<ModalProps> = memo(function ModalCobro({ isOpen, onCancel, 
                 <strong>Cambio: $</strong>
               </InputGroupText>
               <Input step={0.01} value={cambio.toFixed(2)} onChange={(e) => setCambio(parseFloat(e.target.value))} type="number" invalid={cambioInvalid} />
+            </InputGroup>
+          </Row>
+        </Col>
+      </Row>
+    </ModalBody>
+  );
+
+  const renderCobroTarjeta = () => (
+    <ModalBody>
+      <Row>
+        <Col className="d-flex align-items-center justify-content-center text" sm={2}>
+          <h1>
+            <i className="ri-bank-card-fill" />
+          </h1>
+        </Col>
+        <Col sm={10}>
+          <Row>
+            <InputGroup>
+              <InputGroupText>
+                <strong>Total: $</strong>
+              </InputGroupText>
+              <Input readOnly step={0.01} min={0} type="number" value={total.toFixed(2)} invalid={false} />
+            </InputGroup>
+          </Row>
+          <Row>
+            <InputGroup>
+              <InputGroupText>
+                <strong>Confirmar monto: $</strong>
+              </InputGroupText>
+              <Input innerRef={inputRefMontoTarjeta} onKeyDown={(e) => handleKeyDownOnSearch(e.code)} value={montoConfirmado} onChange={(e) => setMontoConfirmado(parseFloat(e.target.value))} step={0.01} min={0} type="number" invalid={montoInvalid} />
             </InputGroup>
           </Row>
         </Col>

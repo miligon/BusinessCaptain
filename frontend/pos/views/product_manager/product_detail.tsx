@@ -40,6 +40,7 @@ import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { Codigo, Producto } from 'pos/store/products/products_slice';
 import { generateBarcode } from 'common/utils';
 import Modal from 'pos/components/forms/Modal';
+import axiosBC from 'pos/store/interceptors';
 
 const ProductDetails: FC = () => {
   const { id: id_producto } = useParams();
@@ -63,6 +64,7 @@ const ProductDetails: FC = () => {
   const [inputCodebarInvalid, setInputCodebarInvalid] = useState(false);
   const [codebars, setCodebars] = useState([] as Codigo[]);
   const [publicacionImpresa, setPublicacionImpresa] = useState(false);
+  const [UPCCodeError, setUPCCodeError] = useState('');
 
   const [showExitConfirmation, setShowExitConfirmation] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -129,14 +131,36 @@ const ProductDetails: FC = () => {
 
   const handleDeleteCodebar = (codigo: string) => setCodebars([...codebars.filter((c) => c.codigo !== codigo)]);
 
-  const handleAddCodebar = () => {
-    const newCodebars = codebars;
-    if (newCodebars.find((c) => c.codigo === inputCodebar) || inputCodebar === '') {
+  const codebarVerification = async (codigo: string) => {
+    const endpoint = `api/almacen/producto/search?depto=&marca=&familia=&query=&codigo=${codigo}&page=1`;
+    try {
+      const response = await axiosBC.get(endpoint);
+      return response.data.results;
+    } catch (error) {
+      console.error('Ocurrió un error.', error);
+      throw error;
+    }
+  };
+
+  const handleAddCodebar = async () => {
+    const newCodebars = [...codebars];
+    const trimmedCodebar = inputCodebar.trim();
+
+    if (newCodebars.find((c) => c.codigo === trimmedCodebar) || trimmedCodebar === '') {
       setInputCodebarInvalid(true);
+      setUPCCodeError(`El código ya esta registrado en la lista de codigos`);
       return;
     }
 
-    setCodebars([...newCodebars, { codigo: inputCodebar }]);
+    const usedCode = await codebarVerification(inputCodebar);
+
+    if (usedCode.length === 1) {
+      setInputCodebarInvalid(true);
+      setUPCCodeError(`Código ya en uso por: ${usedCode[0].sku} - ${usedCode[0].producto}`);
+      return;
+    }
+
+    setCodebars([...newCodebars, { codigo: trimmedCodebar }]);
   };
 
   const onSubmit: SubmitHandler<Producto> = (data) => {
@@ -332,7 +356,7 @@ const ProductDetails: FC = () => {
                         }}
                         onKeyDown={(e) => handleKeyDownOnCode(e.code)}
                       />
-                      <FormFeedback>Código invalido o ya en uso</FormFeedback>
+                      <FormFeedback>{UPCCodeError}</FormFeedback>
                     </InputGroup>
                   </FormGroup>
                 </Col>
